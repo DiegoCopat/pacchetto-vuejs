@@ -20,11 +20,13 @@ Un pacchetto PHP per generare configurazioni di grafici per Vue.js utilizzando A
 
 ## Installazione
 
+### 1. Installazione tramite Composer
+
 ```bash
 composer require diegocopat/pacchetto-vuejs
 ```
 
-### Installazione in Laravel
+### 2. Pubblicazione degli asset (Laravel)
 
 Dopo aver installato il pacchetto con Composer, hai due opzioni per pubblicare gli asset necessari:
 
@@ -45,30 +47,66 @@ Questo comando pubblicherà:
 php artisan pacchetto-vuejs:install
 ```
 
-Questo comando, oltre a pubblicare gli stessi asset di cui sopra, tenterà anche di:
-- Verificare se npm è installato sul sistema
-- Aggiungere automaticamente le dipendenze necessarie al file package.json (se possibile)
-- Fornire istruzioni aggiuntive per l'integrazione
+Questo comando, oltre a pubblicare gli stessi asset di cui sopra, fornirà istruzioni aggiuntive per l'integrazione.
 
-### Integrazione con Vue.js
+### 3. Installazione delle dipendenze npm (OBBLIGATORIO)
 
-Dopo l'installazione degli asset, è necessario:
-
-1. Installare le dipendenze frontend:
+⚠️ **IMPORTANTE**: Dopo aver pubblicato gli asset, è **NECESSARIO** installare manualmente i pacchetti npm richiesti:
 
 ```bash
-# Installa ApexCharts e il wrapper Vue
 npm install apexcharts vue3-apexcharts
-
-# Oppure con Yarn
+# Oppure se usi Yarn
 yarn add apexcharts vue3-apexcharts
 ```
 
-2. Integrare ApexCharts nel tuo file principale JavaScript (es. app.js, main.js):
+> ⚠️ **Nota**: Senza questo passaggio, l'importazione di `vue3-apexcharts` fallirà e il pacchetto non funzionerà correttamente!
+
+### 4. Integrazione con Vue.js
+
+Dopo l'installazione degli asset e dei pacchetti npm, è necessario:
+
+1. Integrare ApexCharts nel tuo file principale JavaScript (es. app.js, main.js):
 
 ```javascript
 import PacchettoVueJs from './vendor/diegocopat/apexcharts-setup';
 app.use(PacchettoVueJs);
+```
+
+2. Ricompilare gli asset:
+
+```bash
+npm run dev
+# o
+npm run build
+```
+
+## Risoluzione dei problemi comuni
+
+### Errore: "Failed to resolve import 'vue3-apexcharts'"
+
+Se incontri questo errore:
+```
+[plugin:vite:import-analysis] Failed to resolve import "vue3-apexcharts" from "resources/js/vendor/diegocopat/apexcharts-setup.js". Does the file exist?
+```
+
+**Soluzione**: Assicurati di aver installato le dipendenze npm richieste:
+```bash
+npm install apexcharts vue3-apexcharts
+```
+
+### Errore: "apexchart is not defined" o componente non trovato
+
+Se il componente ApexChart non viene riconosciuto nei tuoi template Vue:
+
+1. Verifica di aver aggiunto l'importazione nel tuo app.js:
+```javascript
+import PacchettoVueJs from './vendor/diegocopat/apexcharts-setup';
+app.use(PacchettoVueJs);
+```
+
+2. Se stai usando file `.vue` singoli, assicurati di importare anche lì:
+```javascript
+import VueApexCharts from 'vue3-apexcharts';
 ```
 
 ## Utilizzo Base
@@ -242,29 +280,6 @@ export default {
   }
 }
 </script>
-
-<style>
-.dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-.chart-section {
-  margin-bottom: 40px;
-}
-
-h1 {
-  color: #2d3748;
-  margin-bottom: 30px;
-}
-
-h2 {
-  color: #4a5568;
-  margin-bottom: 15px;
-}
-</style>
 ```
 
 ## Integrazione con Laravel
@@ -295,11 +310,6 @@ class ChartController extends Controller
                  ->setColors(['#4C51BF']);
         
         return response()->json($generator->generateChartConfig());
-    }
-    
-    public function generaComponente()
-    {
-        // ...codice per generare un componente Vue
     }
 }
 ```
@@ -376,23 +386,7 @@ $generator->setTitle('Titolo del grafico')
 | `generateVueComponent()` | Genera un componente Vue con configurazione statica |
 | `generateDynamicVueComponent()` | Genera un componente Vue che accetta props |
 
-## Risoluzione dei problemi comuni
-
-### La versione corretta non viene installata
-
-Se riscontri problemi con la versione del pacchetto che viene installata, verifica di aver svuotato la cache di Composer:
-
-```bash
-composer clear-cache
-```
-
-Puoi anche specificare esplicitamente la versione da installare:
-
-```bash
-composer require diegocopat/pacchetto-vuejs:1.0.2
-```
-
-### Note per gli sviluppatori del pacchetto
+## Note per gli sviluppatori del pacchetto
 
 Se stai contribuendo o modificando il pacchetto, ricorda che per rilasciare una nuova versione è necessario:
 
