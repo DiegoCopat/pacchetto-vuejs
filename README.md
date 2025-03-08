@@ -5,7 +5,7 @@ Un pacchetto PHP per generare configurazioni di grafici per Vue.js utilizzando A
 ## Caratteristiche
 
 - Generazione di configurazioni per ApexCharts
-- Supporto per vari tipi di grafici (linea, barre, torta, area, radar)
+- Supporto per vari tipi di grafici (linea, barre, torta, donut, area, radar)
 - Personalizzazione completa di colori, stili e opzioni
 - Generazione di componenti Vue.js completi
 - Supporto per grafici statici e dinamici
@@ -22,6 +22,53 @@ Un pacchetto PHP per generare configurazioni di grafici per Vue.js utilizzando A
 
 ```bash
 composer require diegocopat/pacchetto-vuejs
+```
+
+### Installazione in Laravel
+
+Dopo aver installato il pacchetto con Composer, hai due opzioni per pubblicare gli asset necessari:
+
+#### Opzione 1: Utilizzare il comando vendor:publish standard
+
+```bash
+php artisan vendor:publish --provider="DiegoCopat\PacchettoVueJs\PacchettoVueJsServiceProvider"
+```
+
+Questo comando pubblicherà:
+- Gli asset nella directory `public/vendor/diegocopat/pacchetto-vuejs`
+- I componenti Vue nella directory `resources/js/Components/vendor/diegocopat`
+- Il file di configurazione in `resources/js/vendor/diegocopat/apexcharts-setup.js`
+
+#### Opzione 2: Utilizzare il comando di installazione dedicato
+
+```bash
+php artisan pacchetto-vuejs:install
+```
+
+Questo comando, oltre a pubblicare gli stessi asset di cui sopra, tenterà anche di:
+- Verificare se npm è installato sul sistema
+- Aggiungere automaticamente le dipendenze necessarie al file package.json (se possibile)
+- Fornire istruzioni aggiuntive per l'integrazione
+
+### Integrazione con Vue.js
+
+Dopo l'installazione degli asset, è necessario:
+
+1. Installare le dipendenze frontend:
+
+```bash
+# Installa ApexCharts e il wrapper Vue
+npm install apexcharts vue3-apexcharts
+
+# Oppure con Yarn
+yarn add apexcharts vue3-apexcharts
+```
+
+2. Integrare ApexCharts nel tuo file principale JavaScript (es. app.js, main.js):
+
+```javascript
+import PacchettoVueJs from './vendor/diegocopat/apexcharts-setup';
+app.use(PacchettoVueJs);
 ```
 
 ## Utilizzo Base
@@ -82,17 +129,7 @@ file_put_contents('VenditeMensiliChart.vue', $vueCode);
 
 ## Configurazione in Vue.js
 
-### Installazione delle dipendenze frontend
-
-```bash
-# Installa Vue.js (se non lo hai già fatto)
-npm install vue
-
-# Installa ApexCharts e il wrapper Vue
-npm install --save apexcharts vue3-apexcharts
-```
-
-### Configurazione in Vue.js (main.js)
+### Configurazione in Vue.js (main.js o app.js)
 
 ```javascript
 import { createApp } from 'vue'
@@ -232,12 +269,6 @@ h2 {
 
 ## Integrazione con Laravel
 
-### Installazione in Laravel
-
-```bash
-composer require diegocopat/pacchetto-vuejs
-```
-
 ### Creazione di un Controller
 
 ```php
@@ -344,6 +375,36 @@ $generator->setTitle('Titolo del grafico')
 | `__construct(ChartGenerator $generator, string $componentName)` | Crea un nuovo generatore di componenti Vue |
 | `generateVueComponent()` | Genera un componente Vue con configurazione statica |
 | `generateDynamicVueComponent()` | Genera un componente Vue che accetta props |
+
+## Risoluzione dei problemi comuni
+
+### La versione corretta non viene installata
+
+Se riscontri problemi con la versione del pacchetto che viene installata, verifica di aver svuotato la cache di Composer:
+
+```bash
+composer clear-cache
+```
+
+Puoi anche specificare esplicitamente la versione da installare:
+
+```bash
+composer require diegocopat/pacchetto-vuejs:1.0.2
+```
+
+### Note per gli sviluppatori del pacchetto
+
+Se stai contribuendo o modificando il pacchetto, ricorda che per rilasciare una nuova versione è necessario:
+
+1. Aggiornare il numero di versione in `composer.json`
+2. Creare e pushare un tag Git per la nuova versione:
+
+```bash
+git tag v1.0.2
+git push origin v1.0.2
+```
+
+Packagist utilizza i tag Git per determinare le versioni disponibili.
 
 ## Contribuire
 
