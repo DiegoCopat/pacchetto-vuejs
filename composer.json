@@ -1,9 +1,9 @@
 {
     "name": "diegocopat/pacchetto-vuejs",
-    "description": "Descrizione del tuo pacchetto",
+    "description": "Generatore di configurazioni per grafici Vue.js",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "authors": [
         {
             "name": "Diego Copat",
@@ -25,6 +25,18 @@
     "autoload-dev": {
         "psr-4": {
             "DiegoCopat\\PacchettoVueJs\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-package-install": [
+            "@php -r \"echo \\\"\\n\\nPer completare l'installazione, esegui:\\n npm install apexcharts vue3-apexcharts\\n oppure:\\n yarn add apexcharts vue3-apexcharts\\n\\n\\\";\"" 
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DiegoCopat\\PacchettoVueJs\\PacchettoVueJsServiceProvider"
+            ]
         }
     }
 }
